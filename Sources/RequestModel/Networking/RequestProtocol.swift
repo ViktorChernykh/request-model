@@ -39,6 +39,7 @@ public protocol RequestProtocol {
 // MARK: - Default RequestProtocol
 
 public extension RequestProtocol {
+	var body: (any Codable)? { nil }
 	var data: Data? { nil }
 
 	/// Creates path from request params.
