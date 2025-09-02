@@ -9,15 +9,19 @@
 public enum ContentType {
 	case json
 	case text
+	case html
 	case data
 	case file
+	case none
 
-	public var value: String {
+	public var header: (String, String) {
 		switch self {
-		case .json: return "application/json"
-		case .text: return "text/html; charset=utf-8"
-		case .data: return "application/octet-stream"
-		case .file: return "multipart/form-data"
+		case .json: ("Content-Type", "application/json")
+		case .text: ("Content-Type", "text/plain; charset=utf-8")
+		case .html: ("Content-Type", "text/html; charset=utf-8")
+		case .data: ("Content-Type", "application/octet-stream")
+		case .file: ("Content-Type", "multipart/form-data")
+		case .none: ("", "")
 		}
 	}
 }

@@ -26,6 +26,9 @@ public protocol RequestProtocol {
 	/// Optional raw data body.
 	var data: Data? { get }
 
+	/// Use for response decoding.
+	var decoding: String.Encoding { get }
+
 	/// Maximum number of repetitions if the response is bad.
 	var repeatIfBadResponse: UInt8 { get }
 
@@ -38,8 +41,9 @@ public protocol RequestProtocol {
 public extension RequestProtocol {
 	var body: (any Codable)? { nil }
 	var data: Data? { nil }
-	var repeatIfBadResponse: UInt8 { 2 }
-	var timeout: Int64 { 10 }
+	var repeatIfBadResponse: UInt8 { 1 }
+	var timeout: Int64 { 8 }
+	var decoding: String.Encoding { .utf8 }
 
 	/// Creates path from request params.
 	///
@@ -50,22 +54,12 @@ public extension RequestProtocol {
 	}
 
 	mutating func addHeaders(token: String?) {
-		switch cachePolicy {
-		case .useNoStoreNoCache:
-			headers.append(("Cache-Control", "no-store, max-age=0, must-revalidate"))
-		case .usePrivateCachePolicy1day:
-			headers.append(("Cache-Control", "private, max-age=86400"))
+		if cachePolicy != .none {
+			headers.append(cachePolicy.header)
 		}
 
-		switch contentType {
-		case .json:
-			headers.append(("Content-Type", "application/json"))
-		case .text:
-			headers.append(("Content-Type", "text/html; charset=utf-8"))
-		case .data:
-			headers.append(("Content-Type", "application/octet-stream"))
-		case .file:
-			headers.append(("Content-Type", "multipart/form-data"))
+		if contentType != .none {
+			headers.append(contentType.header)
 		}
 
 		if let token {
