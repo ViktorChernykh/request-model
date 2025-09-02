@@ -39,11 +39,6 @@ public protocol RequestProtocol {
 // MARK: - Default RequestProtocol
 
 public extension RequestProtocol {
-	var body: (any Codable)? { nil }
-	var data: Data? { nil }
-	var repeatIfBadResponse: UInt8 { 1 }
-	var timeout: Int64 { 8 }
-	var decoding: String.Encoding { .utf8 }
 
 	/// Creates path from request params.
 	///
