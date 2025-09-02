@@ -39,6 +39,7 @@ public protocol RequestProtocol {
 // MARK: - Default RequestProtocol
 
 public extension RequestProtocol {
+	var data: Data? { nil }
 
 	/// Creates path from request params.
 	///
