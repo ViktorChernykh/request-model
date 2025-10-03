@@ -6,13 +6,14 @@
 //
 
 import struct Foundation.Data
+import Vapor
 
 /// Defines the structure of a network request.
 public protocol RequestProtocol {
 	var path: String { get }
 
-	var requestType: RequestMethod { get }
-	var contentType: ContentType { get }
+	var requestType: HTTPMethod { get }
+	var contentType: HTTPMediaType { get }
 	var cachePolicy: CachePolicy { get }
 
 	var headers: [(String, String)] { get set }
@@ -21,7 +22,7 @@ public protocol RequestProtocol {
 	var queries: [String: String] { get }
 
 	/// Optional request body of type Codable.
-	var body: (any Codable)? { get }
+	var body: (any Content)? { get }
 
 	/// Optional raw data body.
 	var data: Data? { get }
@@ -39,7 +40,7 @@ public protocol RequestProtocol {
 // MARK: - Default RequestProtocol
 
 public extension RequestProtocol {
-	var body: (any Codable)? { nil }
+	var body: (any Content)? { nil }
 	var data: Data? { nil }
 
 	/// Creates path from request params.
@@ -55,9 +56,8 @@ public extension RequestProtocol {
 			headers.append(cachePolicy.header)
 		}
 
-		if contentType != .none {
-			headers.append(contentType.header)
-		}
+		// Add Content-Type header using Vapor's HTTPMediaType
+		headers.append(("Content-Type", contentType.serialize()))
 
 		if let token {
 			headers.append(("Authorization", "Bearer \(token)"))
