@@ -10,9 +10,13 @@ let package = Package(
     products: [
         .library(name: "RequestModel", targets: ["RequestModel"]),
     ],
-    dependencies: [],
+    dependencies: [
+		.package(url: "https://github.com/vapor/vapor.git", from: "4.116.0"),
+	],
     targets: [
-        .target(name: "RequestModel", dependencies: []),
+        .target(name: "RequestModel", dependencies: [
+			.product(name: "Vapor", package: "vapor"),
+		]),
     ]
 )
 
@@ -22,10 +26,4 @@ var swiftSettings: [SwiftSetting] { [
 	.unsafeFlags(["-O"], .when(configuration: .release)),
 	// "ExistentialAny" is an option that makes the use of the `any` keyword for existential types `required`
 	.enableUpcomingFeature("ExistentialAny")
-] }
-
-/// Linker settings for stripping symbols.
-var linkerSettings: [LinkerSetting] { [
-	// Linker settings to strip all symbols (incl. debug info)
-	.unsafeFlags(["-Xlinker", "-s"], .when(configuration: .release))
 ] }
